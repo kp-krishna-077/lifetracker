@@ -62,7 +62,7 @@ export function HabitCard({ habit }: HabitCardProps) {
         // For count/time habits, mark as complete with target value
         await completionMutation.mutateAsync({ 
           completed: true, 
-          value: habit.target 
+          value: habit.target || 1
         });
       }
     } finally {
@@ -75,7 +75,7 @@ export function HabitCard({ habit }: HabitCardProps) {
     const newValue = currentValue + 1;
     
     await completionMutation.mutateAsync({
-      completed: newValue >= habit.target,
+      completed: newValue >= (habit.target || 1),
       value: newValue
     });
   };
@@ -85,7 +85,7 @@ export function HabitCard({ habit }: HabitCardProps) {
     const newValue = Math.max(0, currentValue - 1);
     
     await completionMutation.mutateAsync({
-      completed: newValue >= habit.target,
+      completed: newValue >= (habit.target || 1),
       value: newValue
     });
   };

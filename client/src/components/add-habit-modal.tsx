@@ -195,7 +195,7 @@ export function AddHabitModal({ open, onOpenChange }: AddHabitModalProps) {
                   id="target"
                   type="number"
                   min="1"
-                  value={formData.target}
+                  value={formData.target || 1}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
                     target: parseInt(e.target.value) || 1 

@@ -123,8 +123,17 @@ export class MemStorage implements IStorage {
   async createHabit(habitData: InsertHabit & { userId: string }): Promise<Habit> {
     const id = randomUUID();
     const habit: Habit = {
-      ...habitData,
       id,
+      userId: habitData.userId,
+      name: habitData.name,
+      description: habitData.description || null,
+      icon: habitData.icon || "fas fa-star",
+      color: habitData.color || "blue",
+      type: habitData.type || "boolean",
+      target: habitData.target || 1,
+      frequency: habitData.frequency || "daily",
+      frequencyData: habitData.frequencyData || null,
+      isActive: habitData.isActive ?? true,
       createdAt: new Date()
     };
     this.habits.set(id, habit);
@@ -160,7 +169,7 @@ export class MemStorage implements IStorage {
   }
 
   async createOrUpdateHabitEntry(entryData: InsertHabitEntry): Promise<HabitEntry> {
-    const existingEntry = await this.getHabitEntry(entryData.habitId, entryData.date);
+    const existingEntry = await this.getHabitEntry(entryData.habitId || "", entryData.date);
     
     if (existingEntry) {
       const updatedEntry = { ...existingEntry, ...entryData };
@@ -169,8 +178,12 @@ export class MemStorage implements IStorage {
     } else {
       const id = randomUUID();
       const entry: HabitEntry = {
-        ...entryData,
         id,
+        habitId: entryData.habitId || "",
+        date: entryData.date,
+        completed: entryData.completed ?? false,
+        value: entryData.value ?? 0,
+        notes: entryData.notes || null,
         createdAt: new Date()
       };
       this.habitEntries.set(id, entry);
@@ -183,7 +196,7 @@ export class MemStorage implements IStorage {
     const habitIds = userHabits.map(habit => habit.id);
     
     return Array.from(this.habitEntries.values())
-      .filter(entry => habitIds.includes(entry.habitId) && entry.date === date);
+      .filter(entry => entry.habitId && habitIds.includes(entry.habitId) && entry.date === date);
   }
 
   async getUserEntriesForDateRange(userId: string, startDate: string, endDate: string): Promise<HabitEntry[]> {
@@ -192,7 +205,7 @@ export class MemStorage implements IStorage {
     
     return Array.from(this.habitEntries.values())
       .filter(entry => 
-        habitIds.includes(entry.habitId) && 
+        entry.habitId && habitIds.includes(entry.habitId) && 
         entry.date >= startDate && 
         entry.date <= endDate
       );
@@ -206,8 +219,13 @@ export class MemStorage implements IStorage {
   async createAchievement(achievementData: InsertAchievement & { userId: string }): Promise<Achievement> {
     const id = randomUUID();
     const achievement: Achievement = {
-      ...achievementData,
       id,
+      userId: achievementData.userId,
+      type: achievementData.type,
+      habitId: achievementData.habitId || null,
+      title: achievementData.title,
+      description: achievementData.description || null,
+      icon: achievementData.icon,
       unlockedAt: new Date()
     };
     this.achievements.set(id, achievement);

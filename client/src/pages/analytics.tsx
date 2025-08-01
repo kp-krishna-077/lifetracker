@@ -54,9 +54,11 @@ export default function Analytics() {
     );
   }
 
-  const bestHabit = habits?.reduce((best, current) => 
-    current.completionRate > (best?.completionRate || 0) ? current : best
-  );
+  const bestHabit = habits && habits.length > 0 
+    ? habits.reduce((best, current) => 
+        current.completionRate > (best?.completionRate || 0) ? current : best
+      )
+    : null;
 
   const longestStreak = habits?.reduce((max, current) => 
     current.longestStreak > max ? current.longestStreak : max, 0

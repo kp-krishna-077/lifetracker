@@ -44,7 +44,9 @@ export function getProgressPercentage(habit: HabitWithStats): number {
   }
   
   if (habit.type === "count" || habit.type === "time") {
-    return Math.min((habit.todayEntry.value / habit.target) * 100, 100);
+    const value = habit.todayEntry.value || 0;
+    const target = habit.target || 1;
+    return Math.min((value / target) * 100, 100);
   }
   
   return 0;

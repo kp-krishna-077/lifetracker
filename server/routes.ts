@@ -10,6 +10,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Initialize demo user
   storage.createUser({ username: "demo", password: "demo" }).then(user => {
+    // Override demo user ID for consistency
+    const DEMO_USER_ID = user.id;
     // Create some demo habits
     const demoHabits = [
       {
@@ -82,7 +84,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all habits with stats
   app.get("/api/habits", async (req, res) => {
     try {
-      const habits = await storage.getHabitsWithStats(DEMO_USER_ID);
+      // Get demo user ID
+      const demoUser = await storage.getUserByUsername("demo");
+      const userId = demoUser?.id || "demo-user";
+      const habits = await storage.getHabitsWithStats(userId);
       res.json(habits);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch habits" });
@@ -92,8 +97,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new habit
   app.post("/api/habits", async (req, res) => {
     try {
+      const demoUser = await storage.getUserByUsername("demo");
+      const userId = demoUser?.id || "demo-user";
       const habitData = insertHabitSchema.parse(req.body);
-      const habit = await storage.createHabit({ ...habitData, userId: DEMO_USER_ID });
+      const habit = await storage.createHabit({ ...habitData, userId });
       res.json(habit);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -166,8 +173,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Start date and end date are required" });
       }
       
+      const demoUser = await storage.getUserByUsername("demo");
+      const userId = demoUser?.id || "demo-user";
       const entries = await storage.getUserEntriesForDateRange(
-        DEMO_USER_ID, 
+        userId, 
         startDate as string, 
         endDate as string
       );
@@ -180,9 +189,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user stats
   app.get("/api/stats", async (req, res) => {
     try {
-      const habits = await storage.getHabitsWithStats(DEMO_USER_ID);
+      const demoUser = await storage.getUserByUsername("demo");
+      const userId = demoUser?.id || "demo-user";
+      const habits = await storage.getHabitsWithStats(userId);
       const today = new Date().toISOString().split('T')[0];
-      const todayEntries = await storage.getUserEntriesForDate(DEMO_USER_ID, today);
+      const todayEntries = await storage.getUserEntriesForDate(userId, today);
       
       const totalHabits = habits.length;
       const completedToday = todayEntries.filter(entry => entry.completed).length;
