@@ -4,6 +4,8 @@
 
 HabitFlow is a modern, mobile-first habit tracking application built as a Progressive Web App (PWA). The application helps users build positive habits through an intuitive interface featuring habit management, progress tracking, analytics, calendar views, and achievement systems. It's designed to be completely free and focuses on providing a clean, user-friendly experience for habit formation and maintenance.
 
+The app includes inspirational long-term achievements designed to motivate users who commit to years of consistent habit building, with special recognition for 5+ year journeys including milestones like "Diamond Dedication" (5 years), "Time Guardian" (6 years), "Eternal Champion" (7+ years), and "Legendary Soul" (10+ years).
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

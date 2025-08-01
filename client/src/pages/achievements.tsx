@@ -138,8 +138,121 @@ export default function Achievements() {
       });
     }
 
-    // Add some locked achievements for motivation
+    // Long-term inspirational achievements (for 5+ year users)
     achievements.push(
+      // Year-based milestones
+      {
+        id: 'foundation-year',
+        title: 'The Foundation',
+        description: 'Complete 365 days of habit tracking - You\'ve built the foundation of lasting change',
+        icon: 'fas fa-mountain',
+        color: 'gold',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'life-transformer',
+        title: 'Life Transformer',
+        description: '2 years of dedication - You\'ve fundamentally transformed your daily life',
+        icon: 'fas fa-phoenix-alt',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'habit-sage',
+        title: 'Habit Sage',
+        description: '3 years of wisdom - You\'ve become a master of your own destiny',
+        icon: 'fas fa-infinity',
+        color: 'gold',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'legacy-builder',
+        title: 'Legacy Builder',
+        description: '4 years of commitment - You\'re building a legacy of excellence',
+        icon: 'fas fa-monument',
+        color: 'purple',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'diamond-dedication',
+        title: 'Diamond Dedication',
+        description: '5 years of unwavering commitment - You are diamond-forged through consistency',
+        icon: 'fas fa-gem',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'time-guardian',
+        title: 'Time Guardian',
+        description: '6 years of mastery - You\'ve become a guardian of your own time and habits',
+        icon: 'fas fa-hourglass-end',
+        color: 'gold',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'eternal-champion',
+        title: 'Eternal Champion',
+        description: '7+ years of dedication - You\'ve achieved eternal champion status in life mastery',
+        icon: 'fas fa-crown',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'legendary-soul',
+        title: 'Legendary Soul',
+        description: '10+ years of transformation - You are a legendary soul who inspires others',
+        icon: 'fas fa-star',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      
+      // Special long-term achievements
+      {
+        id: 'perfect-year',
+        title: 'Perfect Year',
+        description: 'Complete all habits every day for an entire year - The ultimate dedication',
+        icon: 'fas fa-certificate',
+        color: 'gold',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'habit-architect',
+        title: 'Habit Architect',
+        description: 'Create and maintain 50+ different habits over your journey',
+        icon: 'fas fa-hammer',
+        color: 'purple',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'streak-legend',
+        title: 'Streak Legend',
+        description: 'Achieve a 1000-day streak on any habit - You are unstoppable',
+        icon: 'fas fa-fire',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      {
+        id: 'life-artist',
+        title: 'Life Artist',
+        description: '5 years of creative habit building - You\'ve painted your life as a masterpiece',
+        icon: 'fas fa-palette',
+        color: 'rainbow',
+        unlocked: false,
+        rarity: 'legendary'
+      },
+      
+      // Original achievements for shorter-term motivation
       {
         id: 'century-streak',
         title: 'Century Club',
@@ -175,6 +288,18 @@ export default function Achievements() {
   const achievements = generateAchievements();
   const unlockedAchievements = achievements.filter(a => a.unlocked);
   const lockedAchievements = achievements.filter(a => !a.unlocked);
+  
+  // Separate long-term inspirational achievements
+  const longTermAchievements = lockedAchievements.filter(a => 
+    ['foundation-year', 'life-transformer', 'habit-sage', 'legacy-builder', 'diamond-dedication', 
+     'time-guardian', 'eternal-champion', 'legendary-soul', 'perfect-year', 'habit-architect', 
+     'streak-legend', 'life-artist'].includes(a.id)
+  );
+  const otherLockedAchievements = lockedAchievements.filter(a => 
+    !['foundation-year', 'life-transformer', 'habit-sage', 'legacy-builder', 'diamond-dedication', 
+      'time-guardian', 'eternal-champion', 'legendary-soul', 'perfect-year', 'habit-architect', 
+      'streak-legend', 'life-artist'].includes(a.id)
+  );
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -294,15 +419,63 @@ export default function Achievements() {
           </div>
         )}
 
-        {/* Locked Achievements */}
-        {lockedAchievements.length > 0 && (
+        {/* Long-Term Journey Achievements */}
+        {longTermAchievements.length > 0 && (
+          <div>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400 mb-2">
+                Long-Term Journey
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Inspirational achievements for dedicated users who commit to years of growth
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {longTermAchievements.map((achievement) => (
+                <Card key={achievement.id} className="relative overflow-hidden border-2 border-dashed border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs">
+                      Epic Journey
+                    </Badge>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
+                        <i className={`${achievement.icon} text-xl`}></i>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-base">
+                          {achievement.title}
+                        </h3>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                          {achievement.description}
+                        </p>
+                        <div className="flex items-center space-x-2 mt-3">
+                          <Badge 
+                            variant="outline" 
+                            className="text-xs capitalize border-purple-300 text-purple-600 dark:border-purple-600 dark:text-purple-400"
+                          >
+                            {achievement.rarity}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Other Locked Achievements */}
+        {otherLockedAchievements.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
               <Target className="h-5 w-5 text-gray-500" />
-              <span>Goals to Unlock</span>
+              <span>Upcoming Goals</span>
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {lockedAchievements.map((achievement) => (
+              {otherLockedAchievements.map((achievement) => (
                 <Card key={achievement.id} className="relative overflow-hidden opacity-60">
                   <div className={`absolute top-0 right-0 w-0 h-0 border-l-[20px] border-b-[20px] border-l-transparent ${getRarityColor(achievement.rarity)}`}></div>
                   <CardContent className="p-4 text-center">
