@@ -6,6 +6,7 @@ import { FloatingActionButton } from "@/components/bottom-navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/components/theme-provider";
 import { HabitWithStats } from "@shared/schema";
 import { formatDate, getTodayDateString, generateWeekData } from "@/lib/habit-utils";
@@ -14,7 +15,10 @@ import {
   Moon, 
   User, 
   Plus,
-  Trophy
+  Trophy,
+  Zap,
+  Target,
+  TrendingUp
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -144,10 +148,60 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10">
+        <div className="grid grid-cols-4 gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAddModalOpen(true)}
+            className="h-16 flex-col space-y-1 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-800"
+          >
+            <Plus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">Add Habit</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-16 flex-col space-y-1 bg-white dark:bg-gray-800 hover:bg-green-50 dark:hover:bg-green-900/20 border-green-200 dark:border-green-800"
+          >
+            <Trophy className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <span className="text-xs text-green-600 dark:text-green-400 font-medium">Goals</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-16 flex-col space-y-1 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 border-purple-200 dark:border-purple-800"
+          >
+            <i className="fas fa-chart-bar text-purple-600 dark:text-purple-400"></i>
+            <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">Analytics</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-16 flex-col space-y-1 bg-white dark:bg-gray-800 hover:bg-orange-50 dark:hover:bg-orange-900/20 border-orange-200 dark:border-orange-800"
+          >
+            <i className="fas fa-calendar text-orange-600 dark:text-orange-400"></i>
+            <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">Calendar</span>
+          </Button>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="flex-1 p-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Today's Habits</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            Today's Habits
+            {stats && stats.todayProgress === 100 && (
+              <Badge className="bg-green-500 text-white">
+                <Trophy className="h-3 w-3 mr-1" />
+                Complete!
+              </Badge>
+            )}
+          </h2>
           <Button
             variant="ghost"
             size="sm"
@@ -157,6 +211,51 @@ export default function Dashboard() {
             <Plus className="h-5 w-5" />
           </Button>
         </div>
+
+        {/* Motivational Banner */}
+        {stats && stats.currentStreak > 0 && (
+          <Card className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <Zap className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg">Amazing Streak!</h3>
+                  <p className="text-sm opacity-90">
+                    You're on fire! {stats.currentStreak} days of consistency. Keep it up!
+                  </p>
+                </div>
+                <Badge className="bg-white bg-opacity-20 text-white border-white/30">
+                  {stats.currentStreak} days
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Daily Progress Insight */}
+        {stats && stats.todayProgress > 0 && stats.todayProgress < 100 && (
+          <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <Target className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold">Almost There!</h3>
+                  <p className="text-sm opacity-90">
+                    {Math.round(100 - stats.todayProgress)}% left to complete today's goals
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold">{stats.completedToday}</div>
+                  <div className="text-xs opacity-75">of {stats.totalHabits}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Habits List */}
         {habitsLoading ? (
@@ -189,14 +288,43 @@ export default function Dashboard() {
                 <Trophy className="h-12 w-12 mx-auto" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                No habits yet
+                Ready to Start Your Journey?
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Start building positive habits today!
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Transform your life one habit at a time. Small consistent actions lead to big results!
               </p>
-              <Button onClick={() => setIsAddModalOpen(true)}>
+              
+              {/* Popular Habit Suggestions */}
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Popular habits to get started:</h4>
+                <div className="grid grid-cols-2 gap-2 text-left">
+                  {[
+                    { icon: "fas fa-tint", name: "Drink 8 Glasses of Water", color: "blue" },
+                    { icon: "fas fa-book-open", name: "Read 10 Pages", color: "green" },
+                    { icon: "fas fa-meditation", name: "Meditate 5 Minutes", color: "purple" },
+                    { icon: "fas fa-dumbbell", name: "Exercise 30 Minutes", color: "red" }
+                  ].map((suggestion, index) => (
+                    <div key={index} className="flex items-center space-x-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        suggestion.color === 'blue' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' :
+                        suggestion.color === 'green' ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400' :
+                        suggestion.color === 'purple' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' :
+                        'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400'
+                      }`}>
+                        <i className={`${suggestion.icon} text-sm`}></i>
+                      </div>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{suggestion.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <Button 
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Your First Habit
+                Create Your First Habit
               </Button>
             </CardContent>
           </Card>
