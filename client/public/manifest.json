@@ -1,0 +1,24 @@
+{
+  "name": "HabitFlow - Personal Habit Tracker",
+  "short_name": "HabitFlow",
+  "description": "A beautiful, free habit tracker to help you build positive habits and achieve your goals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDgiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik03MiA2NEMxMC43NDUgNjQgNjAgNTMuMjU0IDYwIDQwVjQwQzYwIDI2Ljc0NSA3MC43NDUgMTYgODQgMTZIMTA4QzEyMS4yNTUgMTYgMTMyIDI2Ljc0NSAxMzIgNDBWNDBDMTMyIDUzLjI1NSAxMjEuMjU1IDY0IDEwOCA2NEg3MloiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMiIvPgo8cGF0aCBkPSJNODQgODBIMTA4QzEyMS4yNTUgODAgMTMyIDkwLjc0NSAxMzIgMTA0VjEyOEMxMzIgMTQxLjI1NSAxMjEuMjU1IDE1MiAxMDggMTUySDg0QzcwLjc0NSAxNTIgNjAgMTQxLjI1NSA2MCAxMjhWMTA0QzYwIDkwLjc0NSA3MC43NDUgODAgODQgODBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHA+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSIxOTIiIHkyPSIxOTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzNCODJGNiIvPgo8c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzhCNUNGNiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwNkI2RDQiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTI4IiBmaWxsPSJ1cmwoI2dyYWRpZW50MF9saW5lYXJfMV8xKSIvPgo8cGF0aCBkPSJNMTkyIDE2MEMyOTYuMTEgMTYwIDE2MCA5OS4zNzMgMTYwIDEwNlYxMDZDMTYwIDcxLjMzMyAxODguMjM1IDQ0IDIyNCA0NEgyODhDMzIzLjc2NSA0NCAzNTIgNzEuMzMzIDM1MiAxMDZWMTA2QzM1MiAxNDAuNjY3IDMyMy43NjUgMTY4IDI4OCAxNjhIMTkyWiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4yIi8+CjxwYXRoIGQ9Ik0yMjQgMjEySDI4OEMzMjMuNzY1IDIxMiAzNTIgMjM5LjMzMyAzNTIgMjc0VjMzOEMzNTIgMzc0LjY2NyAzMjMuNzY1IDQwMiAyODggNDAySDIyNEMxODguMjM1IDQwMiAxNjAgMzc0LjY2NyAxNjAgMzM4VjI3NEMxNjAgMjM5LjMzMyAxODguMjM1IDIxMiAyMjQgMjEyWiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4zIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSI1MTIiIHkyPSI1MTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzNCODJGNiIvPgo8c3RvcCBvZmZzZXQ9IjAuNSIgc3RvcC1jb2xvcj0iIzhCNUNGNiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwNkI2RDQiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "lifestyle", "health"],
+  "orientation": "portrait",
+  "prefer_related_applications": false
+}
