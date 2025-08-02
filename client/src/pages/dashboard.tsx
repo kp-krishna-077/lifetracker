@@ -25,11 +25,11 @@ export default function Dashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  const { data: habits, isLoading: habitsLoading } = useQuery<HabitWithStats[]>({
+  const { data: habits, isLoading: habitsLoading, error: habitsError } = useQuery<HabitWithStats[]>({
     queryKey: ["/api/habits"],
   });
 
-  const { data: stats, isLoading: statsLoading } = useQuery<{
+  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery<{
     totalHabits: number;
     completedToday: number;
     todayProgress: number;
@@ -38,7 +38,7 @@ export default function Dashboard() {
     queryKey: ["/api/stats"],
   });
 
-  const { data: entries } = useQuery({
+  const { data: entries, error: entriesError } = useQuery({
     queryKey: ["/api/entries"],
     queryFn: async () => {
       const today = new Date();
@@ -56,6 +56,12 @@ export default function Dashboard() {
   };
 
   const weekData = entries ? generateWeekData(entries) : [];
+
+  if (habitsError) return <div>Error loading habits: {habitsError.message}</div>;
+  if (statsError) return <div>Error loading stats: {statsError.message}</div>;
+  if (entriesError) return <div>Error loading entries: {entriesError.message}</div>;
+
+  console.log("Rendering Dashboard");
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pb-20">

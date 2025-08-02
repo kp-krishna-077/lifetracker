@@ -1,0 +1,518 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitFlow - Your Personal Habit Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#6366F1',
+                        'secondary': '#10B981',
+                        'accent': '#F59E0B',
+                        'dark-bg': '#0F172A',
+                        'dark-card': '#1E293B',
+                        'dark-border': '#334155',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceGentle: {
+                            '0%, 20%, 50%, 80%, 100%': { transform: 'translateY(0)' },
+                            '40%': { transform: 'translateY(-8px)' },
+                            '60%': { transform: 'translateY(-4px)' },
+                        }
+                    }
+                }
+            },
+            darkMode: 'class',
+        };
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #06B6D4 100%);
+        }
+        .habit-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .habit-card:hover {
+            transform: translateY(-2px);
+        }
+        .progress-ring {
+            transition: stroke-dasharray 0.5s ease-in-out;
+        }
+        .swipe-indicator {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .habit-card:hover .swipe-indicator {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white transition-colors duration-300">
+
+<!-- @COMPONENT: AppContainer [main app wrapper] -->
+<div class="max-w-md mx-auto bg-white dark:bg-dark-bg min-h-screen relative overflow-hidden">
+    
+    <!-- @COMPONENT: Header [app header with branding and theme toggle] -->
+    <header class="gradient-bg text-white p-4 shadow-lg relative overflow-hidden">
+        <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-chart-line text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">HabitFlow</h1>
+                    <p class="text-sm opacity-90" data-bind="currentDate">Today, Dec 28</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button data-event="click:toggleTheme" class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center hover:bg-opacity-30 transition-all">
+                    <i class="fas fa-moon text-lg"></i>
+                </button>
+                <button data-event="click:openProfile" class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center hover:bg-opacity-30 transition-all">
+                    <i class="fas fa-user text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+    </header>
+
+    <!-- @COMPONENT: StatsOverview [daily progress summary] -->
+    <div class="p-4 bg-white dark:bg-dark-card border-b dark:border-dark-border">
+        <div class="grid grid-cols-3 gap-4">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto relative">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-gray-200 dark:text-gray-700" fill="none" stroke="currentColor" stroke-width="3"
+                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                        <path class="text-secondary progress-ring" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                              stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-sm font-bold" data-bind="todayProgress">75%</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Today</p>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-accent" data-bind="currentStreak">12</div>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Day Streak</p>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-primary" data-bind="totalHabits">8</div>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Habits</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- @COMPONENT: HabitList [main habit tracking interface] -->
+    <div class="flex-1 p-4 space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Today's Habits</h2>
+            <button data-event="click:addHabit" class="text-primary hover:text-primary-600 transition-colors">
+                <i class="fas fa-plus text-lg"></i>
+            </button>
+        </div>
+
+        <!-- @MAP: habits.map(habit => ( -->
+        <!-- @COMPONENT: HabitCard [individual habit tracking card] -->
+        <div class="habit-card bg-white dark:bg-dark-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-dark-border relative">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-dumbbell text-blue-600 dark:text-blue-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="habit.name">Morning Exercise</h3>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span data-bind="habit.streak">🔥 5 days</span>
+                            <span>•</span>
+                            <span data-bind="habit.target">30 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button data-event="click:completeHabit" data-implementation="Should update habit completion status"
+                            class="w-10 h-10 bg-secondary text-white rounded-xl flex items-center justify-center hover:bg-secondary-600 transition-all transform hover:scale-105">
+                        <i class="fas fa-check text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="swipe-indicator absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <i class="fas fa-chevron-left text-xs"></i>
+                <span class="text-xs ml-1">Swipe</span>
+            </div>
+        </div>
+
+        <div class="habit-card bg-white dark:bg-dark-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-dark-border relative">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-book-open text-green-600 dark:text-green-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="habit.name">Read Daily</h3>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span data-bind="habit.streak">🔥 12 days</span>
+                            <span>•</span>
+                            <span data-bind="habit.target">20 pages</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <i class="fas fa-plus text-gray-400 text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="habit-card bg-white dark:bg-dark-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-dark-border relative opacity-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-meditation text-purple-600 dark:text-purple-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="habit.name">Meditation</h3>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span data-bind="habit.streak">💔 Streak broken</span>
+                            <span>•</span>
+                            <span data-bind="habit.target">10 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button data-event="click:completeHabit" 
+                            class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center hover:bg-secondary hover:text-white transition-all">
+                        <i class="fas fa-redo text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="habit-card bg-white dark:bg-dark-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-dark-border relative">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-tint text-yellow-600 dark:text-yellow-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="habit.name">Drink Water</h3>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span data-bind="habit.streak">🔥 3 days</span>
+                            <span>•</span>
+                            <span data-bind="habit.progress">6/8 glasses</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div class="w-3/4 h-full bg-accent rounded-full transition-all duration-500"></div>
+                    </div>
+                    <button data-event="click:incrementHabit" 
+                            class="w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center hover:bg-yellow-500 transition-all transform hover:scale-105">
+                        <i class="fas fa-plus text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- @END_MAP )) -->
+
+        <!-- @COMPONENT: WeeklyOverview [weekly progress summary] -->
+        <div class="bg-white dark:bg-dark-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-dark-border mt-6">
+            <h3 class="font-semibold mb-3">This Week</h3>
+            <div class="grid grid-cols-7 gap-2">
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">M</div>
+                    <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">T</div>
+                    <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">W</div>
+                    <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">T</div>
+                    <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-times text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">F</div>
+                    <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">S</div>
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center animate-bounce-gentle">
+                        <i class="fas fa-star text-white text-xs"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 mb-1">S</div>
+                    <div class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- @COMPONENT: InsightsCard [motivational insights] -->
+        <div class="bg-gradient-to-r from-primary to-purple-600 rounded-2xl p-4 text-white">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-trophy text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Great Progress!</h3>
+                    <p class="text-sm opacity-90" data-bind="insight">You're 25% more consistent than last week</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- @COMPONENT: BottomNavigation [main app navigation] -->
+    <nav class="bg-white dark:bg-dark-card border-t dark:border-dark-border p-4 safe-area-bottom">
+        <div class="flex justify-around">
+            <button data-event="click:navigateToHome" class="flex flex-col items-center space-y-1 text-primary">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs font-medium">Home</span>
+            </button>
+            <button data-event="click:navigateToAnalytics" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-primary transition-colors">
+                <i class="fas fa-chart-bar text-lg"></i>
+                <span class="text-xs">Analytics</span>
+            </button>
+            <button data-event="click:navigateToCalendar" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-primary transition-colors">
+                <i class="fas fa-calendar text-lg"></i>
+                <span class="text-xs">Calendar</span>
+            </button>
+            <button data-event="click:navigateToAchievements" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-primary transition-colors">
+                <i class="fas fa-medal text-lg"></i>
+                <span class="text-xs">Rewards</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- @COMPONENT: FloatingActionButton [add new habit] -->
+    <button data-event="click:showAddHabitModal" data-implementation="Should open habit creation modal"
+            class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 transition-all transform hover:scale-110 z-50">
+        <i class="fas fa-plus text-xl"></i>
+    </button>
+
+    <!-- @COMPONENT: AddHabitModal [habit creation modal - hidden by default] -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" data-state="isAddHabitModalOpen:false">
+        <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-dark-card rounded-t-3xl p-6 animate-slide-up">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold">Add New Habit</h2>
+                <button data-event="click:closeAddHabitModal" class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <form data-implementation="Should handle habit creation">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Habit Name</label>
+                        <input type="text" placeholder="e.g., Morning Yoga" 
+                               class="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Icon</label>
+                        <div class="grid grid-cols-6 gap-3">
+                            <button type="button" class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-dumbbell text-blue-600 dark:text-blue-400"></i>
+                            </button>
+                            <button type="button" class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center hover:bg-green-200 transition-colors">
+                                <i class="fas fa-book text-green-600 dark:text-green-400"></i>
+                            </button>
+                            <button type="button" class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center hover:bg-purple-200 transition-colors">
+                                <i class="fas fa-meditation text-purple-600 dark:text-purple-400"></i>
+                            </button>
+                            <button type="button" class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center hover:bg-yellow-200 transition-colors">
+                                <i class="fas fa-tint text-yellow-600 dark:text-yellow-400"></i>
+                            </button>
+                            <button type="button" class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center hover:bg-red-200 transition-colors">
+                                <i class="fas fa-heart text-red-600 dark:text-red-400"></i>
+                            </button>
+                            <button type="button" class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-plus text-gray-600 dark:text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Frequency</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" class="p-3 border-2 border-primary bg-primary/10 text-primary rounded-xl text-sm font-medium">
+                                Daily
+                            </button>
+                            <button type="button" class="p-3 border border-gray-200 dark:border-gray-600 rounded-xl text-sm font-medium hover:border-primary transition-colors">
+                                Custom
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3 mt-6">
+                    <button type="button" data-event="click:closeAddHabitModal" 
+                            class="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-xl text-center font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" data-event="submit:createHabit" data-implementation="Should validate and create new habit"
+                            class="flex-1 p-3 bg-primary text-white rounded-xl text-center font-medium hover:bg-primary-600 transition-colors">
+                        Create Habit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- @END_COMPONENT: AppContainer -->
+
+<script>
+    // TODO: Implement state management, habit CRUD operations, local storage, and PWA functionality
+    
+    (function() {
+        // Theme toggle functionality
+        function initThemeToggle() {
+            const themeToggle = document.querySelector('[data-event="click:toggleTheme"]');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or default to light mode
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.classList.toggle('dark', savedTheme === 'dark');
+            
+            themeToggle?.addEventListener('click', () => {
+                const isDark = html.classList.contains('dark');
+                html.classList.toggle('dark', !isDark);
+                localStorage.setItem('theme', !isDark ? 'dark' : 'light');
+                
+                // Update icon
+                const icon = themeToggle.querySelector('i');
+                icon.className = !isDark ? 'fas fa-sun text-lg' : 'fas fa-moon text-lg';
+            });
+        }
+        
+        // Modal management
+        function initModalHandlers() {
+            const modal = document.querySelector('[data-state="isAddHabitModalOpen:false"]');
+            const openButtons = document.querySelectorAll('[data-event="click:addHabit"], [data-event="click:showAddHabitModal"]');
+            const closeButtons = document.querySelectorAll('[data-event="click:closeAddHabitModal"]');
+            
+            openButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            // Close modal on backdrop click
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+        
+        // Habit interaction handlers
+        function initHabitHandlers() {
+            // Habit completion
+            document.querySelectorAll('[data-event="click:completeHabit"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.target.closest('.habit-card');
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+                        // TODO: Update habit completion status in state
+                    }, 150);
+                });
+            });
+            
+            // Habit increment (for countable habits)
+            document.querySelectorAll('[data-event="click:incrementHabit"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    button.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                        // TODO: Increment habit count in state
+                    }, 150);
+                });
+            });
+        }
+        
+        // Navigation handlers
+        function initNavigationHandlers() {
+            document.querySelectorAll('[data-event^="click:navigateTo"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    // Remove active state from all nav buttons
+                    document.querySelectorAll('nav button').forEach(btn => {
+                        btn.classList.remove('text-primary');
+                        btn.classList.add('text-gray-400');
+                    });
+                    
+                    // Add active state to clicked button
+                    button.classList.remove('text-gray-400');
+                    button.classList.add('text-primary');
+                    
+                    // TODO: Implement actual navigation between app screens
+                });
+            });
+        }
+        
+        // Initialize all functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            initThemeToggle();
+            initModalHandlers();
+            initHabitHandlers();
+            initNavigationHandlers();
+        });
+        
+        // PWA service worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // TODO: Register service worker for offline functionality
+            });
+        }
+    })();
+</script>
+
+</body>
+</html>
